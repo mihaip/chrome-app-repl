@@ -1,0 +1,14 @@
+{
+  "name": "REPL",
+  "version": "1.0",
+  "app": {
+    "background": {
+      "scripts": ["main.js"]
+    }
+  },
+  "sandbox": {
+    "pages": [
+      "sandbox.html"
+    ]
+  }
+}
