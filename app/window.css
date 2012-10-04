@@ -7,6 +7,10 @@
   background-color: black;
 }
 
+#console .jqconsole {
+  white-space: pre-wrap;
+}
+
 #sandbox-frame {
   width: 0;
   height: 0;
