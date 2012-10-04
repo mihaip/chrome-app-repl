@@ -1,4 +1,5 @@
 function sendHostMessage(type, params) {
+  // TODO(mihaip): handle structured clone errors.
   top.postMessage({type: type, params: params}, '*');
 }
 
@@ -100,20 +101,19 @@ function generateEventStub(path) {
 
 addMessageHandler(MessageType.EVAL, function(code) {
   var result;
-  var exception;
   try {
     result = eval.call(window, code);
   } catch (e) {
-    exception = e;
+    sendHostMessage(MessageType.EVAL_RESULT, {
+      exception: {
+        type: e.constructor.name,
+        message: e.message
+      }
+    });
+    return;
   }
 
-  // TODO(mihai): I assume we can do better, but this way we know nothing will
-  // be rejected by the structured clone done by postMessage.
-  var serializedResult = JSON.stringify(result);
-  var serializedException = JSON.stringify(exception);
-
   sendHostMessage(MessageType.EVAL_RESULT, {
-    result: serializedResult,
-    exception: serializedException
+    result: result
   });
 });

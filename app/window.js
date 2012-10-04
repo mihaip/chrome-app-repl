@@ -81,7 +81,12 @@ addMessageHandler(MessageType.LOG, function(params) {
 });
 
 addMessageHandler(MessageType.EVAL_RESULT, function(result) {
-  log(JSON.stringify(result));
+  if (result.exception) {
+    error(result.exception.type + ': ' + result.exception.message);
+    return;
+  }
+
+  log(JSON.stringify(result.result));
 });
 
 addMessageHandler(MessageType.RUN_API_FUNCTION, function(invocation) {

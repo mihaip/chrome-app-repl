@@ -4,4 +4,5 @@
 - handle functions that don't return a value (map them to callbacks anyway?) like chrome.runtime.getURL
 - fix greeting message (currently black-on-black)
 - have way of inserting canned snippets (context menu?)
-- serialize/log exceptions better
+- support multi-line input (see jqconsole.Prompt)
+- add necessary manifest entries to enable use of the identity API
