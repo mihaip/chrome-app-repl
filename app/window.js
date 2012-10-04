@@ -1,12 +1,9 @@
+jQuery.noConflict();
+
 var $ = document.querySelector.bind(document);
 
 function log(text, opt_color) {
-  var logLineNode = document.createElement('div');
-  logLineNode.innerText = text;
-  if (opt_color) {
-    logLineNode.style.color = opt_color;
-  }
-  $('#log').appendChild(logLineNode);
+  jqconsole.Write(text + '\n', 'jqconsole-output');
 }
 
 function sendSandboxMessage(type, params) {
@@ -49,7 +46,19 @@ function gatherDescriptors(object, descriptors, path) {
   }
 }
 
+var jqconsole;
+
 onload = function() {
+  jqconsole = jQuery('#console').jqconsole('chrome-app-repl\n', '>>>');
+  function loop() {
+    // Start the prompt with history enabled.
+    jqconsole.Prompt(true, function(input) {
+      sendSandboxMessage(MessageType.EVAL, input);
+      loop();
+    });
+  };
+  loop();
+
   var apiDescriptors = {
     chrome: {
       type: 'object',
@@ -58,13 +67,6 @@ onload = function() {
   };
   gatherDescriptors(chrome, apiDescriptors.chrome.children, ['chrome']);
   sendSandboxMessage(MessageType.INIT_APIS, apiDescriptors)
-};
-
-$('#repl-form').onsubmit = function(event) {
-  event.preventDefault();
-
-  var code = $('#code').value;
-  sendSandboxMessage(MessageType.EVAL, code);
 };
 
 addMessageHandler(MessageType.LOG, function(params) {

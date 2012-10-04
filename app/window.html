@@ -3,18 +3,16 @@
 <head>
 	<meta charset="utf-8" />
 	<title>REPL</title>
+	<link rel="stylesheet" href="third_party/jqconsole/jqconsole.css">
+	<link rel="stylesheet" href="third_party/jqconsole/ansi.css">
+	<link rel="stylesheet" href="window.css">
 </head>
 <body>
-  <form id="repl-form">
-    <textarea id="code" cols="50" rows="1">
-      chrome.serial.getPorts(function(ports) {log('Ports: ' + ports);})
-    </textarea>
-    <input type="submit" value="Run">
-  </form>
-  <pre id="log"></pre>
-
+  <div id="console"></div>
   <iframe src="sandbox.html" id="sandbox-frame"></iframe>
 
+  <script src="third_party/jquery/jquery-1.8.2.min.js"></script>
+  <script src="third_party/jqconsole/jqconsole-2.7.min.js"></script>
   <script src="messaging.js"></script>
   <script src="window.js"></script>
 </body>
