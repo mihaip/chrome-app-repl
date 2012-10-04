@@ -2,8 +2,8 @@ function sendHostMessage(type, params) {
   top.postMessage({type: type, params: params}, '*');
 }
 
-function log(text, opt_color) {
-  sendHostMessage(MessageType.LOG, {text: text, opt_color: opt_color});
+function log(text, opt_level) {
+  sendHostMessage(MessageType.LOG, {text: text, opt_level: opt_level});
 }
 
 addMessageHandler(MessageType.INIT_APIS, function(apiDescriptors) {
@@ -34,7 +34,7 @@ function generateApiStubs(descriptors, object, path) {
           object[propertyName] = generateEventStub(propertyPath);
           break;
         default:
-          log('Unexpected type ' + descriptor.type + ' for property ' + propertyPath.join('.'), 'red');
+          error('Unexpected type ' + descriptor.type + ' for property ' + propertyPath.join('.'));
           break;
       }
     }
@@ -63,8 +63,8 @@ function generateFunctionStub(path) {
         case 'boolean':
           break;
         default:
-          log('Unexpected argument type ' + argType + ' for argument ' +
-              arg + ' to function ' + path.join('.'), 'red');
+          error('Unexpected argument type ' + argType + ' for argument ' +
+              arg + ' to function ' + path.join('.'));
           continue;
       }
       params.push(arg);
@@ -78,7 +78,7 @@ function generateFunctionStub(path) {
 
 addMessageHandler(MessageType.RUN_API_FUNCTION_CALLBACK, function(result) {
   if (!(result.callbackId in pendingCallbacks)) {
-    log('Unknown callback ' + result.callbackId);
+    error('Unknown callback ' + result.callbackId);
     return;
   }
   var callback = pendingCallbacks[result.callbackId];
@@ -90,10 +90,10 @@ addMessageHandler(MessageType.RUN_API_FUNCTION_CALLBACK, function(result) {
 function generateEventStub(path) {
   return {
     addListener: function() {
-      log('Adding a listener for ' + path.join('.'));
+      debug('Adding a listener for ' + path.join('.'));
     },
     removeListener: function() {
-      log('Removing a listener for ' + path.join('.'));
+      debug('Removing a listener for ' + path.join('.'));
     }
   };
 }

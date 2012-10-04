@@ -1,9 +1,11 @@
+// We don't actually use jQuery, but jq-console does.
 jQuery.noConflict();
 
 var $ = document.querySelector.bind(document);
 
-function log(text, opt_color) {
-  jqconsole.Write(text + '\n', 'jqconsole-output');
+function log(text, opt_level) {
+  var className = opt_level || LogLevel.OUTPUT
+  jqconsole.Write(text + '\n', className);
 }
 
 function sendSandboxMessage(type, params) {
@@ -26,7 +28,7 @@ function gatherDescriptors(object, descriptors, path) {
     switch (propertyType) {
       case 'object':
         if (propertyPath.length == 20) {
-          log(propertyPath.join('.') + ': max depth exceeded, not recursing', 'red');
+          error(propertyPath.join('.') + ': max depth exceeded, not recursing');
         } else {
           descriptor.children = {};
           gatherDescriptors(propertyValue, descriptor.children, propertyPath);
@@ -41,15 +43,20 @@ function gatherDescriptors(object, descriptors, path) {
       case 'function':
         break;
       default:
-        log(propertyPath.join('.') + ': unexpected type: ' + propertyType, 'red');
+        error(propertyPath.join('.') + ': unexpected type: ' + propertyType);
     }
   }
 }
 
 var jqconsole;
 
+var GREETING_MESSAGE = '\033[33mWelcome to chrome-app-repl.\033[0m\n\n' +
+    'Type in the JavaScript statements or Chrome API calls that you wish to ' +
+    'run. Use log(), info(), warning() or error() to output.\n';
+var CONSOLE_PROMPT = '> ';
+
 onload = function() {
-  jqconsole = jQuery('#console').jqconsole('chrome-app-repl\n', '>>>');
+  jqconsole = jQuery('#console').jqconsole(GREETING_MESSAGE, CONSOLE_PROMPT);
   function loop() {
     // Start the prompt with history enabled.
     jqconsole.Prompt(true, function(input) {
@@ -70,7 +77,7 @@ onload = function() {
 };
 
 addMessageHandler(MessageType.LOG, function(params) {
-  log(params.text, params.opt_color);
+  log(params.text, params.opt_level);
 });
 
 addMessageHandler(MessageType.EVAL_RESULT, function(result) {
@@ -83,7 +90,7 @@ addMessageHandler(MessageType.RUN_API_FUNCTION, function(invocation) {
     if (pathComponent in apiFunction) {
       apiFunction = apiFunction[pathComponent];
     } else {
-      log('Could not find ' + pathComponent + ' in ' + invocation.path.join('.'));
+      error('Could not find ' + pathComponent + ' in ' + invocation.path.join('.'));
       return;
     }
   }

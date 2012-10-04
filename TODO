@@ -4,3 +4,4 @@
 - handle functions that don't return a value (map them to callbacks anyway?) like chrome.runtime.getURL
 - fix greeting message (currently black-on-black)
 - have way of inserting canned snippets (context menu?)
+- serialize/log exceptions better

@@ -11,6 +11,22 @@
   white-space: pre-wrap;
 }
 
+#console .output {
+  color: #fff;
+}
+
+#console .info {
+  color: #bbb;
+}
+
+#console .warning {
+  color: #ff0;
+}
+
+#console .error {
+  color: #f00;
+}
+
 #sandbox-frame {
   width: 0;
   height: 0;
