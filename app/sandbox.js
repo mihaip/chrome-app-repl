@@ -45,16 +45,45 @@ function generateApiStubs(descriptors, object, path) {
   }
 }
 
+var pendingCallbacks = {};
+var callbackIdCounter = 0;
+
 function generateFunctionStub(path) {
   return function() {
+    var params = [];
+    for (var i = 0; i < arguments.length; i++) {
+      var arg = arguments[i];
+      var argType = typeof arg;
+      switch (typeof arg) {
+        case 'function':
+          pendingCallbacks[callbackIdCounter] = arg;
+          arg = {callbackId: callbackIdCounter++};
+        case 'number':
+        case 'string':
+        case 'boolean':
+          break;
+        default:
+          log('Unexpected argument type ' + argType + ' for argument ' +
+              arg + ' to function ' + path.join('.'), 'red');
+          continue;
+      }
+      params.push(arg);
+    }
     sendHostMessage(MessageType.RUN_API_FUNCTION, {
-      path: path
+      path: path,
+      params: params
     });
   };
 }
 
-addMessageHandler(MessageType.RUN_API_FUNCTION_RESULT, function(result) {
-  log('Result: ' + JSON.stringify(result));
+addMessageHandler(MessageType.RUN_API_FUNCTION_CALLBACK, function(result) {
+  if (!(result.callbackId in pendingCallbacks)) {
+    log('Unknown callback ' + result.callbackId);
+    return;
+  }
+  var callback = pendingCallbacks[result.callbackId];
+  delete pendingCallbacks[result.callbackId];
+  callback.apply(this, result.params);
 });
 
 

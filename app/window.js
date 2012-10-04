@@ -57,7 +57,6 @@ onload = function() {
     }
   };
   gatherDescriptors(chrome, apiDescriptors.chrome.children, ['chrome']);
-  console.dir(apiDescriptors);
   sendSandboxMessage(MessageType.INIT_APIS, apiDescriptors)
 };
 
@@ -76,20 +75,34 @@ addMessageHandler(MessageType.EVAL_RESULT, function(result) {
   log(JSON.stringify(result));
 });
 
-addMessageHandler(MessageType.RUN_API_FUNCTION, function(params) {
+addMessageHandler(MessageType.RUN_API_FUNCTION, function(invocation) {
   var apiFunction = window;
-  for (var i = 0, pathComponent; pathComponent = params.path[i]; i++) {
+  for (var i = 0, pathComponent; pathComponent = invocation.path[i]; i++) {
     if (pathComponent in apiFunction) {
       apiFunction = apiFunction[pathComponent];
     } else {
-      log('Could not find ' + pathComponent + ' in ' + params.path.join('.'));
+      log('Could not find ' + pathComponent + ' in ' + invocation.path.join('.'));
       return;
     }
   }
 
-  log('Running ' + params.path.join('.'));
+  var args = [];
+  for (var i = 0; i < invocation.params.length; i++) {
+    var param = invocation.params[i];
+    if (typeof param == 'object' && 'callbackId' in param) {
+      param = generateCallbackStub(param.callbackId);
+    }
+    args.push(param);
+  }
 
-  apiFunction(function(result) {
-    sendSandboxMessage(MessageType.RUN_API_FUNCTION_RESULT, result);
-  });
+  apiFunction.apply(this, args);
 });
+
+function generateCallbackStub(callbackId) {
+  return function() {
+    sendSandboxMessage(MessageType.RUN_API_FUNCTION_CALLBACK, {
+      callbackId: callbackId,
+      params: Array.prototype.slice.call(arguments)
+    });
+  };
+}

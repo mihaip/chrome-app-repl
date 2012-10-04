@@ -7,9 +7,9 @@ var MessageType = {
   EVAL_RESULT: 'eval-result',
   // Sent from the sandbox to the host with a request to run an API function.
   RUN_API_FUNCTION: 'run-api-function',
-  // Sent from the host to the sandbox with the result of an RUN_API_FUNCTION
-  // message.
-  RUN_API_FUNCTION_RESULT: 'run-api-function-result',
+  // Sent from the host to the sandbox when RUN_API_FUNCTION message results in
+  // a callback parameter being invoked.
+  RUN_API_FUNCTION_CALLBACK: 'run-api-function-callback',
   // Sent from the sandbox to the host to log a message to the console.
   LGO: 'log'
 };
