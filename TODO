@@ -1,0 +1,6 @@
+- security protection (make it so that the sandboxed iframe can only run api functions that were in the initially eval-ed text)
+- handle FileEntry results
+- generalize serialization (e.g. turning of callbacks into id references) and make recursive (e.g. for arrays)
+- handle functions that don't return a value (map them to callbacks anyway?) like chrome.runtime.getURL
+- fix greeting message (currently black-on-black)
+- have way of inserting canned snippets (context menu?)
