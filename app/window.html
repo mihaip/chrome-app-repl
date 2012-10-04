@@ -6,7 +6,9 @@
 </head>
 <body>
   <form id="repl-form">
-    <textarea id="code"></textarea>
+    <textarea id="code" cols="50" rows="1">
+      chrome.serial.getPorts(function(ports) {log(ports);})
+    </textarea>
     <input type="submit" value="Run">
   </form>
   <pre id="log"></pre>

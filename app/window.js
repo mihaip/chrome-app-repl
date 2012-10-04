@@ -16,6 +16,7 @@ function sendSandboxMessage(type, params) {
 
 function gatherDescriptors(object, descriptors, path) {
   for (var propertyName in object) {
+    var propertyPath = path.concat(propertyName);
     var propertyValue = object[propertyName];
     var propertyType = typeof propertyValue;
     if (propertyValue instanceof chrome.Event) {
@@ -24,14 +25,14 @@ function gatherDescriptors(object, descriptors, path) {
 
     var descriptor = descriptors[propertyName] = {};
     descriptor.type = propertyType;
-    var propertyPath = path.concat(propertyName);
 
     switch (propertyType) {
       case 'object':
-        if (propertyPath.length == 10) {
+        if (propertyPath.length == 20) {
           log(propertyPath.join('.') + ': max depth exceeded, not recursing', 'red');
         } else {
-          gatherDescriptors(propertyValue, descriptor, propertyPath);
+          descriptor.children = {};
+          gatherDescriptors(propertyValue, descriptor.children, propertyPath);
         }
         break;
       case 'number':
@@ -49,9 +50,15 @@ function gatherDescriptors(object, descriptors, path) {
 }
 
 onload = function() {
-  var apis = {chrome: {}};
-  gatherDescriptors(chrome, apis.chrome, ['chrome']);
-  sendSandboxMessage(MessageType.INIT_APIS, apis)
+  var apiDescriptors = {
+    chrome: {
+      type: 'object',
+      children: {}
+    }
+  };
+  gatherDescriptors(chrome, apiDescriptors.chrome.children, ['chrome']);
+  console.dir(apiDescriptors);
+  sendSandboxMessage(MessageType.INIT_APIS, apiDescriptors)
 };
 
 $('#repl-form').onsubmit = function(event) {
@@ -69,3 +76,20 @@ addMessageHandler(MessageType.EVAL_RESULT, function(result) {
   log(JSON.stringify(result));
 });
 
+addMessageHandler(MessageType.RUN_API_FUNCTION, function(params) {
+  var apiFunction = window;
+  for (var i = 0, pathComponent; pathComponent = params.path[i]; i++) {
+    if (pathComponent in apiFunction) {
+      apiFunction = apiFunction[pathComponent];
+    } else {
+      log('Could not find ' + pathComponent + ' in ' + params.path.join('.'));
+      return;
+    }
+  }
+
+  log('Running ' + params.path.join('.'));
+
+  apiFunction(function(result) {
+    sendSandboxMessage(MessageType.RUN_API_FUNCTION_RESULT, result);
+  });
+});

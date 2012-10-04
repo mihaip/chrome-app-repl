@@ -5,6 +5,11 @@ var MessageType = {
   EVAL: 'eval',
   // Sent from the sandbox to the host with the result of an EVAL message.
   EVAL_RESULT: 'eval-result',
+  // Sent from the sandbox to the host with a request to run an API function.
+  RUN_API_FUNCTION: 'run-api-function',
+  // Sent from the host to the sandbox with the result of an RUN_API_FUNCTION
+  // message.
+  RUN_API_FUNCTION_RESULT: 'run-api-function-result',
   // Sent from the sandbox to the host to log a message to the console.
   LGO: 'log'
 };

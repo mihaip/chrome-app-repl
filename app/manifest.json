@@ -10,5 +10,28 @@
     "pages": [
       "sandbox.html"
     ]
-  }
+  },
+  // TODO(mihaip): auto-generate this from
+  // src/chrome/common/extensions/api/_permission_features.json.
+  "permissions": [
+    "alarms",
+    "audioCapture",
+    "browserTag",
+    "clipboardRead",
+    "clipboardWrite",
+    "contextMenus",
+    "experimental",
+    {"fileSystem": ["write"]},
+    "geolocation",
+    "idle",
+    {"mediaGalleries": ["read", "all-auto-detected"]},
+    "notifications",
+    "pushMessaging",
+    "serial",
+    {"socket": ["tcp-connect", "tcp-listen", "udp-send-to", "udp-bind"]},
+    "storage",
+    "tts",
+    "unlimitedStorage",
+    "videoCapture"
+  ]
 }
