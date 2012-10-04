@@ -102,7 +102,7 @@ addMessageHandler(MessageType.EVAL, function(code) {
   var result;
   var exception;
   try {
-    result = eval(code);
+    result = eval.call(window, code);
   } catch (e) {
     exception = e;
   }
