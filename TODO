@@ -6,3 +6,4 @@
 - have way of inserting canned snippets (context menu?)
 - support multi-line input (see jqconsole.Prompt)
 - add necessary manifest entries to enable use of the identity API
+- map control-D to close
