@@ -9,3 +9,4 @@
 - map control-D to close
 - mention caveats about sync functions
 - add command to dump all api definitions
+- hook up events
