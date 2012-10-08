@@ -4,8 +4,11 @@ jQuery.noConflict();
 var $ = document.querySelector.bind(document);
 
 function log(text, opt_level) {
-  var className = opt_level || LogLevel.OUTPUT
-  jqconsole.Write(text + '\n', className);
+  if (text[text.length - 1] != '\n') {
+    text += '\n';
+  }
+  var className = opt_level || LogLevel.OUTPUT;
+  jqconsole.Write(text, className);
 }
 
 function sendSandboxMessage(type, params) {
