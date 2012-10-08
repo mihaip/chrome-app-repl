@@ -60,6 +60,11 @@ var CONSOLE_PROMPT = '> ';
 
 onload = function() {
   jqconsole = jQuery('#console').jqconsole(GREETING_MESSAGE, CONSOLE_PROMPT);
+
+  jqconsole.RegisterShortcut('D', function() {
+    window.close();
+  });
+
   function loop() {
     // Start the prompt with history enabled.
     jqconsole.Prompt(true, function(input) {

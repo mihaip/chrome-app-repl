@@ -6,7 +6,7 @@
 - have way of inserting canned snippets (context menu?)
 - support multi-line input (see jqconsole.Prompt)
 - add necessary manifest entries to enable use of the identity API
-- map control-D to close
 - mention caveats about sync functions
 - add command to dump all api definitions
 - hook up events
+- persist command history in storage

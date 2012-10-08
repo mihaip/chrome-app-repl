@@ -108,10 +108,10 @@ addMessageHandler(MessageType.RUN_API_FUNCTION_CALLBACK, function(result) {
 function generateEventStub(path) {
   return {
     addListener: function() {
-      debug('Adding a listener for ' + path.join('.'));
+      info('Adding a listener for ' + path.join('.'));
     },
     removeListener: function() {
-      debug('Removing a listener for ' + path.join('.'));
+      info('Removing a listener for ' + path.join('.'));
     }
   };
 }
