@@ -7,7 +7,10 @@ function log(text, opt_level) {
   sendHostMessage(MessageType.LOG, {text: text, opt_level: opt_level});
 }
 
-addMessageHandler(MessageType.INIT_APIS, function(apiDescriptors) {
+var apiDescriptors;
+
+addMessageHandler(MessageType.INIT_APIS, function(descriptors) {
+  apiDescriptors = descriptors;
   generateApiStubs(apiDescriptors, window, []);
 });
 
@@ -17,16 +20,64 @@ window.__defineGetter__('help', function() {
     helpText += '\033[32m' + commandName + ':\033[0m ' + description + '\n';
   }
 
-  addCommandHelp('    log(m)', 'Log a message.');
-  addCommandHelp('   info(m)', 'Log a message at the INFO level.');
-  addCommandHelp('warning(m)', 'Log a message at the WARNING level.');
-  addCommandHelp('  error(m)', 'Log a message at the ERROR level.');
-  addCommandHelp('      help', 'This message.');
+  addCommandHelp('       log(m)', 'Log a message.');
+  addCommandHelp('      info(m)', 'Log a message at the INFO level.');
+  addCommandHelp('   warning(m)', 'Log a message at the WARNING level.');
+  addCommandHelp('     error(m)', 'Log a message at the ERROR level.');
+  addCommandHelp(' dumpEvents()', 'List all events that can be listener for.');
+  addCommandHelp('dumpMethods()', 'List all API methods that can be invoked.');
+  addCommandHelp('         help', 'This message.');
 
   info(helpText);
 
   return SUPPRESS_EVAL_RESPONSE;
 });
+
+function dumpEvents() {
+  // TODO(mihaip): add a more general visitor function pattern for API
+  // descriptors that can be used both here and in generateApiStubs.
+  function dumpEventHelper(descriptors, path) {
+    for (var propertyName in descriptors) {
+      var propertyPath = path.concat(propertyName);
+      var descriptor = descriptors[propertyName];
+
+      if (descriptor.type == 'event') {
+        log(propertyPath.join('.'));
+      }
+
+      if (descriptor.type == 'object') {
+        dumpEventHelper(descriptor.children, propertyPath);
+      }
+
+    }
+  }
+
+  dumpEventHelper(apiDescriptors, []);
+  return SUPPRESS_EVAL_RESPONSE;
+}
+
+function dumpMethods() {
+  // TODO(mihaip): add a more general visitor function pattern for API
+  // descriptors that can be used both here and in generateApiStubs.
+  function dumpMethodsHelper(descriptors, path) {
+    for (var propertyName in descriptors) {
+      var propertyPath = path.concat(propertyName);
+      var descriptor = descriptors[propertyName];
+
+      if (descriptor.type == 'function') {
+        log(propertyPath.join('.'));
+      }
+
+      if (descriptor.type == 'object') {
+        dumpMethodsHelper(descriptor.children, propertyPath);
+      }
+
+    }
+  }
+
+  dumpMethodsHelper(apiDescriptors, []);
+  return SUPPRESS_EVAL_RESPONSE;
+}
 
 function generateApiStubs(descriptors, object, path) {
   for (var propertyName in descriptors) {
