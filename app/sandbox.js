@@ -104,17 +104,47 @@ addMessageHandler(MessageType.RUN_API_FUNCTION_CALLBACK, function(result) {
   callback.apply(this, result.params);
 });
 
+var eventListeners = {};
+var eventListenerIdCounter = 0;
 
+// TODO(mihaip): Generate other event method stubs:
+// http://developer.chrome.com/apps/events.html
 function generateEventStub(path) {
   return {
-    addListener: function() {
-      info('Adding a listener for ' + path.join('.'));
+    addListener: function(listener) {
+      var listenerId = eventListenerIdCounter++;
+      listener.id_ = listenerId;
+      eventListeners[listenerId] = listener;
+
+      sendHostMessage(MessageType.ADD_EVENT_LISTENER, {
+        path: path,
+        listenerId: listenerId
+      });
     },
-    removeListener: function() {
-      info('Removing a listener for ' + path.join('.'));
+    removeListener: function(listener) {
+      var listenerId = listener.id_;
+      if (!(listenerId in eventListeners)) {
+        error('Unknown event listener');
+        return;
+      }
+
+      delete eventListeners[listenerId];
+      sendHostMessage(MessageType.REMOVE_EVENT_LISTENER, {
+        path: path,
+        listenerId: listenerId
+      });
     }
   };
 }
+
+addMessageHandler(MessageType.RUN_EVENT_LISTENER, function(result) {
+  if (!(result.listenerId in eventListeners)) {
+    error('Unknown event listener ' + result.listenerId);
+    return;
+  }
+  var listener = eventListeners[result.listenerId];
+  listener.apply(this, result.params);
+});
 
 addMessageHandler(MessageType.EVAL, function(code) {
   var result;

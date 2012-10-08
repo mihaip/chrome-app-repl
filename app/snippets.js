@@ -1,6 +1,7 @@
 var SNIPPETS = {
   'List serial ports': 'chrome.serial.getPorts(function(ports) {log(\'Serial ports:\\n  \' + ports.join(\',\\n  \'))});',
-  'Add onLaunched listener': 'chrome.app.runtime.onLaunched.addListener(function() {log(\'App was launched\')});'
+  'Add onLaunched listener': 'function launchListener() {log(\'App was launched\')};\nchrome.app.runtime.onLaunched.addListener(launchListener);',
+  'Remove onLaunched listener': 'chrome.app.runtime.onLaunched.removeListener(launchListener);'
 };
 
 window.addEventListener('onload', setUpContextMenuDelayed);

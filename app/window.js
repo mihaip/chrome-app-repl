@@ -101,15 +101,24 @@ addMessageHandler(MessageType.EVAL_RESULT, function(result) {
   log(JSON.stringify(result.result));
 });
 
-addMessageHandler(MessageType.RUN_API_FUNCTION, function(invocation) {
+function lookUpApiFunction(path) {
   var apiFunction = window;
-  for (var i = 0, pathComponent; pathComponent = invocation.path[i]; i++) {
+  for (var i = 0, pathComponent; pathComponent = path[i]; i++) {
     if (pathComponent in apiFunction) {
       apiFunction = apiFunction[pathComponent];
     } else {
-      error('Could not find ' + pathComponent + ' in ' + invocation.path.join('.'));
-      return;
+      error('Could not find ' + pathComponent + ' in ' + path.join('.'));
+      return undefined;
     }
+  }
+
+  return apiFunction;
+}
+
+addMessageHandler(MessageType.RUN_API_FUNCTION, function(invocation) {
+  var apiFunction = lookUpApiFunction(invocation.path);
+  if (!apiFunction) {
+    return;
   }
 
   var args = [];
@@ -132,3 +141,41 @@ function generateCallbackStub(callbackId) {
     });
   };
 }
+
+var listenerStubs = {};
+function generateListenerStub(listenerId) {
+  return function() {
+    sendSandboxMessage(MessageType.RUN_EVENT_LISTENER, {
+      listenerId: listenerId,
+      params: Array.prototype.slice.call(arguments)
+    });
+  };
+};
+
+addMessageHandler(MessageType.ADD_EVENT_LISTENER, function(listener) {
+  var event = lookUpApiFunction(listener.path);
+  if (!event) {
+    return;
+  }
+
+  var listenerStub = generateListenerStub(listener.listenerId);
+  listenerStubs[listener.listenerId] = listenerStub;
+  event.addListener(listenerStub);
+});
+
+addMessageHandler(MessageType.REMOVE_EVENT_LISTENER, function(listener) {
+  var event = lookUpApiFunction(listener.path);
+  if (!event) {
+    return;
+  }
+
+  var listenerStub = listenerStubs[listener.listenerId];
+  if (!listenerStub) {
+    error('Could not find event listener ' + listener.listenerId);
+    return;
+  }
+  delete listenerStubs[listener.listenerId];
+  event.removeListener(listenerStub);
+});
+
+
