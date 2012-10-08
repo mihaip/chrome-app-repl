@@ -4,7 +4,7 @@ jQuery.noConflict();
 var $ = document.querySelector.bind(document);
 
 function log(text, opt_level) {
-  if (text[text.length - 1] != '\n') {
+  if (!text || text[text.length - 1] != '\n') {
     text += '\n';
   }
   var className = opt_level || LogLevel.OUTPUT;
@@ -58,7 +58,7 @@ var GREETING_MESSAGE = '\033[33mWelcome to chrome-app-repl.\033[0m\n\n' +
     'run. Type in \033[32mhelp\033[0m for a list of built-in commands.\n';
 var CONSOLE_PROMPT = '> ';
 
-onload = function() {
+window.addEventListener('load', function() {
   jqconsole = jQuery('#console').jqconsole(GREETING_MESSAGE, CONSOLE_PROMPT);
 
   jqconsole.RegisterShortcut('D', function() {
@@ -82,7 +82,7 @@ onload = function() {
   };
   gatherDescriptors(chrome, apiDescriptors.chrome.children, ['chrome']);
   sendSandboxMessage(MessageType.INIT_APIS, apiDescriptors);
-};
+});
 
 addMessageHandler(MessageType.LOG, function(params) {
   log(params.text, params.opt_level);

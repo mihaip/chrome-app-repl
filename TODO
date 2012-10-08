@@ -3,7 +3,6 @@
 - generalize serialization (e.g. turning of callbacks into id references) and make recursive (e.g. for arrays)
 - handle functions that don't return a value (map them to callbacks anyway?) like chrome.runtime.getURL
 - fix greeting message (currently black-on-black)
-- have way of inserting canned snippets (context menu?)
 - support multi-line input (see jqconsole.Prompt)
 - add necessary manifest entries to enable use of the identity API
 - mention caveats about sync functions
