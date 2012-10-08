@@ -8,3 +8,4 @@
 - mention caveats about sync functions
 - persist command history in storage
 - isolate sandbox implementation from eval by putting it in an anonymous function
+- filter out extension APIs that end up getting injected (chrome.tabs, etc.)
