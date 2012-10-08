@@ -11,6 +11,23 @@ addMessageHandler(MessageType.INIT_APIS, function(apiDescriptors) {
   generateApiStubs(apiDescriptors, window, []);
 });
 
+window.__defineGetter__('help', function() {
+  var helpText = '';
+  function addCommandHelp(commandName, description) {
+    helpText += '\033[32m' + commandName + ':\033[0m ' + description + '\n';
+  }
+
+  addCommandHelp('    log(m)', 'Log a message.');
+  addCommandHelp('   info(m)', 'Log a message at the INFO level.');
+  addCommandHelp('warning(m)', 'Log a message at the WARNING level.');
+  addCommandHelp('  error(m)', 'Log a message at the ERROR level.');
+  addCommandHelp('      help', 'This message.');
+
+  info(helpText);
+
+  return SUPPRESS_EVAL_RESPONSE;
+});
+
 function generateApiStubs(descriptors, object, path) {
   for (var propertyName in descriptors) {
     var propertyPath = path.concat(propertyName);

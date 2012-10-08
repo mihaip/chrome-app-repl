@@ -7,5 +7,5 @@
 - support multi-line input (see jqconsole.Prompt)
 - add necessary manifest entries to enable use of the identity API
 - map control-D to close
-- add help command that lists all built-in commands and caveats about sync functions
+- mention caveats about sync functions
 - add command to dump all api definitions

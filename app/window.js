@@ -52,7 +52,7 @@ var jqconsole;
 
 var GREETING_MESSAGE = '\033[33mWelcome to chrome-app-repl.\033[0m\n\n' +
     'Type in the JavaScript statements or Chrome API calls that you wish to ' +
-    'run. Use log(), info(), warning() or error() to output.\n';
+    'run. Type in \033[32mhelp\033[0m for a list of built-in commands.\n';
 var CONSOLE_PROMPT = '> ';
 
 onload = function() {
@@ -73,7 +73,7 @@ onload = function() {
     }
   };
   gatherDescriptors(chrome, apiDescriptors.chrome.children, ['chrome']);
-  sendSandboxMessage(MessageType.INIT_APIS, apiDescriptors)
+  sendSandboxMessage(MessageType.INIT_APIS, apiDescriptors);
 };
 
 addMessageHandler(MessageType.LOG, function(params) {
@@ -83,6 +83,10 @@ addMessageHandler(MessageType.LOG, function(params) {
 addMessageHandler(MessageType.EVAL_RESULT, function(result) {
   if (result.exception) {
     error(result.exception.type + ': ' + result.exception.message);
+    return;
+  }
+
+  if (result.result == SUPPRESS_EVAL_RESPONSE) {
     return;
   }
 

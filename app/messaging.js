@@ -28,3 +28,7 @@ onmessage = function(event) {
 
   messageHandlers[message.type](message.params);
 }
+
+// Magic value that can be returned from expressions that are eval-ed that
+// prevents the response from being logged on the host side.
+var SUPPRESS_EVAL_RESPONSE = 'suppress-eval-response';
