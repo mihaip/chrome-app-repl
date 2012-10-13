@@ -65,6 +65,13 @@ window.addEventListener('load', function() {
     window.close();
   });
 
+  // The API bindings will log messages to the dev tools console (e.g. when
+  // an API error occurs); we want those to be visible in our console instead.
+  console.error = error;
+  console.debug = log;
+  console.info = info;
+  console.warn = warning;
+
   function loop() {
     // Start the prompt with history enabled.
     jqconsole.Prompt(true, function(input) {
@@ -124,13 +131,20 @@ addMessageHandler(MessageType.RUN_API_FUNCTION, function(invocation) {
   var args = [];
   for (var i = 0; i < invocation.params.length; i++) {
     var param = invocation.params[i];
-    if (typeof param == 'object' && 'callbackId' in param) {
+    if (typeof param == 'object' && param !== null && 'callbackId' in param) {
       param = generateCallbackStub(param.callbackId);
     }
     args.push(param);
   }
 
-  apiFunction.apply(this, args);
+  try {
+    apiFunction.apply(this, args);
+  } catch (e) {
+    // It would be nice to send this exception back to the sandbox frame and
+    // rethrow it, but since it happened synchronously, there's no way to throw
+    // it at the right spot.
+    error(e.constructor.name + ': ' + e.message);
+  }
 });
 
 function generateCallbackStub(callbackId) {
