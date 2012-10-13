@@ -1,6 +1,12 @@
 function sendHostMessage(type, params) {
-  // TODO(mihaip): handle structured clone errors.
-  top.postMessage({type: type, params: params}, '*');
+  try {
+    top.postMessage({type: type, params: params}, '*');
+  } catch (e) {
+    if (e.code == DOMException.DATA_CLONE_ERR) {
+      error('Could not serialize object during postMessage() ' +
+          'from sandbox to host.');
+    }
+  }
 }
 
 function log(text, opt_level) {

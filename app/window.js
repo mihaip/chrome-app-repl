@@ -12,8 +12,15 @@ function log(text, opt_level) {
 }
 
 function sendSandboxMessage(type, params) {
-  $('#sandbox-frame').contentWindow.postMessage(
-      {type: type, params: params}, '*');
+  try {
+    $('#sandbox-frame').contentWindow.postMessage(
+        {type: type, params: params}, '*');
+  } catch (e) {
+    if (e.code == DOMException.DATA_CLONE_ERR) {
+      error('Could not serialize object during postMessage() ' +
+          'from host to sandbox.');
+    }
+  }
 }
 
 var API_BLACKLIST = {
