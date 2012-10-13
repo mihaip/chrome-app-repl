@@ -8,6 +8,4 @@
 - mention caveats about sync functions
 - persist command history in storage
 - isolate sandbox implementation from eval by putting it in an anonymous function
-- filter out extension APIs that end up getting injected (chrome.tabs, etc.)
-- filter out extension APIs (e.g. chrome.bookmarks, chrome.tabs) whose bindings still get injected
 - make log expand object properties (and/or add dir() function)

@@ -16,9 +16,46 @@ function sendSandboxMessage(type, params) {
       {type: type, params: params}, '*');
 }
 
+var API_BLACKLIST = {
+  // Not actually apps APIs.
+  'chrome.loadTimes': 1,
+  'chrome.csi': 1,
+  'chrome.searchBox': 1,
+
+  // Extension APIs that extension-only, but still have bindings injected (they
+  // won't actually work, since the permission is not present).
+  'chrome.bookmarks': 1,
+  'chrome.browserAction': 1,
+  'chrome.devtools': 1,
+  'chrome.management': 1,
+  'chrome.omnibox': 1,
+  'chrome.pageAction': 1,
+  'chrome.scriptBadge': 1,
+  'chrome.tabs': 1,
+  'chrome.test': 1,
+  'chrome.windows': 1,
+
+  // Experimental APIs that are extension-only (experimental APIs currently
+  // can't be restrictd by item type).
+  'chrome.experimental.accessibility': 1,
+  'chrome.experimental.app': 1,
+  'chrome.experimental.discovery': 1,
+  'chrome.experimental.history': 1,
+  'chrome.experimental.idltest': 1,
+  'chrome.experimental.infobars': 1,
+  'chrome.experimental.input.virtualKeyboard': 1,
+  'chrome.experimental.offscreenTabs': 1,
+  'chrome.experimental.processes': 1,
+  'chrome.experimental.record': 1,
+  'chrome.experimental.rlz': 1
+};
+
 function gatherDescriptors(object, descriptors, path) {
   for (var propertyName in object) {
     var propertyPath = path.concat(propertyName);
+    if (propertyPath.join('.') in API_BLACKLIST) {
+      continue;
+    }
     var propertyValue = object[propertyName];
     var propertyType = typeof propertyValue;
     if (propertyValue instanceof chrome.Event) {
