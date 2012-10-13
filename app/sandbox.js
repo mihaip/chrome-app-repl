@@ -130,6 +130,7 @@ function generateFunctionStub(path) {
         case 'number':
         case 'string':
         case 'boolean':
+        case 'object':
           break;
         default:
           error('Unexpected argument type ' + argType + ' for argument ' +
