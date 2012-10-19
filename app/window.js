@@ -97,7 +97,7 @@ function gatherDescriptors(object, descriptors, path) {
 
 var jqconsole;
 
-var GREETING_MESSAGE = '\033[33mWelcome to chrome-app-repl.\033[0m\n\n' +
+var GREETING_MESSAGE = '\033[33mWelcome to App APIs REPL.\033[0m\n\n' +
     'Type in the JavaScript statements or Chrome API calls that you wish to ' +
     'run. Type in \033[32mhelp\033[0m for a list of built-in commands.\n';
 var CONSOLE_PROMPT = '> ';
