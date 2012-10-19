@@ -6,3 +6,4 @@
 - add necessary manifest entries to enable use of the identity API
 - mention caveats about sync functions
 - isolate sandbox implementation from eval by putting it in an anonymous function
+- support text selection (for copy and paste)
