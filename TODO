@@ -5,5 +5,4 @@
 - support multi-line input (see jqconsole.Prompt)
 - add necessary manifest entries to enable use of the identity API
 - mention caveats about sync functions
-- persist command history in storage
 - isolate sandbox implementation from eval by putting it in an anonymous function

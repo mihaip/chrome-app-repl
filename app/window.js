@@ -104,6 +104,7 @@ var CONSOLE_PROMPT = '> ';
 
 window.addEventListener('load', function() {
   jqconsole = jQuery('#console').jqconsole(GREETING_MESSAGE, CONSOLE_PROMPT);
+  restoreHistory(jqconsole);
 
   jqconsole.RegisterShortcut('D', function() {
     window.close();
@@ -120,6 +121,8 @@ window.addEventListener('load', function() {
     // Start the prompt with history enabled.
     jqconsole.Prompt(true, function(input) {
       sendSandboxMessage(MessageType.EVAL, input);
+
+      saveHistory(jqconsole);
       loop();
     });
   };
@@ -236,4 +239,21 @@ addMessageHandler(MessageType.REMOVE_EVENT_LISTENER, function(listener) {
   event.removeListener(listenerStub);
 });
 
+// History save and restore depends on jq-console internals that are not
+// documented, but they seem unlikely to change.
+var HISTORY_STORAGE_KEY = 'history';
 
+function saveHistory(jqconsole) {
+  var data = {};
+  data[HISTORY_STORAGE_KEY] = jqconsole.history;
+  chrome.storage.local.set(data);
+}
+
+function restoreHistory(jqconsole) {
+  chrome.storage.local.get(HISTORY_STORAGE_KEY, function(data) {
+    if (data[HISTORY_STORAGE_KEY]) {
+      jqconsole.history = data[HISTORY_STORAGE_KEY];
+      jqconsole.history_index = jqconsole.history.length;
+    }
+  });
+}
