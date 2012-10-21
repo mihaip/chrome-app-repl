@@ -171,8 +171,11 @@ function generateEventStub(path) {
   return {
     addListener: function(listener) {
       var listenerId = eventListenerIdCounter++;
-      listener.id_ = listenerId;
-      eventListeners[listenerId] = listener;
+      var listenerRef = {
+        listener: listener,
+        path: path
+      };
+      eventListeners[listenerId] = listenerRef;
 
       sendHostMessage(MessageType.ADD_EVENT_LISTENER, {
         path: path,
@@ -180,28 +183,48 @@ function generateEventStub(path) {
       });
     },
     removeListener: function(listener) {
-      var listenerId = listener.id_;
-      if (!(listenerId in eventListeners)) {
+      var registeredListenerId = -1;
+      for (var listenerId in eventListeners) {
+        var listenerRef = eventListeners[listenerId];
+        if (listenerRef.listener == listener &&
+            listenerRef.path.join('.') == path.join('.')) {
+          registeredListenerId = listenerId;
+          break;
+        }
+      }
+
+      if (registeredListenerId == -1) {
         error('Unknown event listener');
         return;
       }
 
-      delete eventListeners[listenerId];
+      delete eventListeners[registeredListenerId];
       sendHostMessage(MessageType.REMOVE_EVENT_LISTENER, {
         path: path,
-        listenerId: listenerId
+        listenerId: registeredListenerId
       });
+    },
+    hasListeners: function(callback) {
+      for (var listenerId in eventListeners) {
+        var listenerPath = eventListeners[listenerId].path;
+        if (path.join('.') == listenerPath.join('.')) {
+          callback(true);
+          return;
+        }
+      }
+
+      callback(false);
     }
   };
 }
 
-addMessageHandler(MessageType.RUN_EVENT_LISTENER, function(result) {
-  if (!(result.listenerId in eventListeners)) {
-    error('Unknown event listener ' + result.listenerId);
+addMessageHandler(MessageType.RUN_EVENT_LISTENER, function(params) {
+  if (!(params.listenerId in eventListeners)) {
+    error('Unknown event listener ' + params.listenerId);
     return;
   }
-  var listener = eventListeners[result.listenerId];
-  listener.apply(this, result.params);
+  var listener = eventListeners[params.listenerId].listener;
+  listener.apply(this, params.params);
 });
 
 addMessageHandler(MessageType.EVAL, function(code) {
