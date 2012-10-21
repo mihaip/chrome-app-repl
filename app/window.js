@@ -109,6 +109,10 @@ window.addEventListener('load', function() {
   jqconsole.RegisterShortcut('D', function() {
     window.close();
   });
+  jqconsole.RegisterMatching('{', '}', 'block-delimiter');
+  jqconsole.RegisterMatching('(', ')', 'block-delimiter');
+  jqconsole.RegisterMatching('[', ']', 'block-delimiter');
+  jqconsole.RegisterMatching('<', '>', 'block-delimiter');
 
   // The API bindings will log messages to the dev tools console (e.g. when
   // an API error occurs); we want those to be visible in our console instead.

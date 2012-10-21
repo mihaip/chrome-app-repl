@@ -28,6 +28,10 @@
   color: #f00;
 }
 
+#console .block-delimiter {
+  color: #ad0;
+}
+
 #sandbox-frame {
   width: 0;
   height: 0;
