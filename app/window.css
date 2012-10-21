@@ -5,6 +5,7 @@
   left: 0;
   right: 0;
   background-color: black;
+  -webkit-user-select: text;
 }
 
 #console .jqconsole {
