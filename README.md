@@ -16,31 +16,44 @@ First, to save some typing, an alias for the socket API is created:
 Then a socket is created. The `_` parameter is a special built-in magic value into the REPL that will generate a callback function that logs when it is called and dumps all of its parameters.
 
     > socket.create('tcp', _);
-    undefined
     chrome.socket.create callback invoked with:
-      {"socketId":22}
+      <object> {
+        socketId:
+          <number> 22
+      }
 
 Now that we know the ID of the socket that was created, we can use it to connect to `www.google.com` on port 80 (the invocation of the callback with 0 indicates success).
 
     > socket.connect(22, 'www.google.com', 80, _);
-    undefined
     chrome.socket.connect callback invoked with:
-      0
+      <number> 0
 
 We then issue our HTTP request (`str2ab` is a built-in function that converts a string to an `ArrayBuffer`).
 
     > socket.write(22, str2ab('GET / HTTP/1.0\r\n\r\n'), _);
-    undefined
     chrome.socket.write callback invoked with:
-      {"bytesWritten":18}
+      <object> {
+        bytesWritten:
+          <number> 18
+      }
 
-And then read the first 512 bytes of the response (`ab2str` is another built-in function that converts an `ArrayBuffer` to a string):
+And then read the first 512 bytes of the response.
 
-    > socket.read(22, 512, function(readInfo) {log(ab2str(readInfo.data))});
-    undefined
-    HTTP/1.0 200 OK
-    Date: Sun, 21 Oct 2012 23:49:32 GMT
+    > socket.read(22, 512, _);
+    chrome.socket.read callback invoked with:
+      <object> {
+        data:
+          <ArrayBuffer, 512 bytes> HTTP/1.0 200 OK
+    Date: Mon, 22 Oct 2012 05:07:53 GMT
     Expires: -1
     Cache-Control: private, max-age=0
     Content-Type: text/html; charset=ISO-8859-1
-    Set-Cookie: PREF=ID=e187568b6e5ec70f:FF=0:TM=1350863372:LM=1350863372:S=1sEm5a5yBRBQhJZU; expires=Tue, 21-Oct-2014 23:49:32 GMT; path=/; domain=.goog
+    Set-Cookie: PREF=ID=d8539cf2c8d07c94:FF=0:TM=1350882473:LM=1350882473:S=KfFPY0z1EOdqBstx; expires=Wed, 22-Oct-2014 05:07:53 GMT; path=/; domain=.google.com
+    Set-Cookie: NID=65=DZuaw2vrI1YOsJl_K6Z9Rg_cYB2MrHyaVVLPC7ZpEnAhMFOGwq0GFCSCpGFenqTnD3tPmUXI7eS-UBpVI8COw_aGPHPxwFxEX_VC96P4DX5yb9t33AYnZnZgm0WJvhzE; expires=Tue, 23-Apr-2013 05:07:53 GMT; path=/; domain=.goog,
+        resultCode:
+          <number> 512
+      }
+
+Finally, we can close the socket.
+
+    > socket.disconnect(22);

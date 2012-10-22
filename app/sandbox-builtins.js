@@ -5,10 +5,65 @@ function generateLoggingCallback(path) {
     log(path.join('.') + ' callback' +
         (arguments.length ? ' invoked with: ' : ''));
     for (var i = 0; i < arguments.length; i++) {
-      var arg = arguments[i];
-      log('  ' + JSON.stringify(arg));
+      log(serializeInternal(arguments[i], '  '));
     }
   };
+}
+
+function serializeInternal(o, opt_prefix) {
+  var prefix = opt_prefix || '';
+  function format(type, value) {
+    return prefix + '\033[2m<' + type + '>\033[0m ' + value;
+  }
+  switch (typeof o) {
+    case 'string':
+      return format('string', '"' + o + '"');
+    case 'number':
+      return format('number', o);
+    case 'boolean':
+      return format('boolean', o);
+    case 'function':
+      return format('function', o);
+    case 'object':
+      if (o instanceof Array) {
+        var buf = format('array', '[\n');
+
+        o.forEach(function(element, index) {
+          buf += serializeInternal(element, prefix + '  ');
+          if (index != o.length - 1) {
+            buf += ',';
+          }
+          buf += '\n';
+        });
+
+        buf += prefix + ']';
+        return buf;
+      }
+
+      if (o instanceof ArrayBuffer) {
+        return format('ArrayBuffer, ' + o.byteLength + ' bytes', ab2str(o));
+      }
+
+      var buf = format('object', '{\n');
+      var first = true;
+      for (propertyName in o) {
+        if (!first) {
+          buf += ',';
+          buf += '\n';
+        } else {
+          first = false;
+        }
+        buf += prefix + '  \033[33m' + propertyName + '\033[0m:\n' + serializeInternal(o[propertyName], prefix + '    ');
+      }
+      buf += '\n' + prefix + '}';
+      return buf;
+    default:
+      return format('unknown', o);
+  }
+}
+
+function serialize(o) {
+  return log(serializeInternal(o));
 }
 
 window.__defineGetter__('help', function() {
@@ -17,20 +72,21 @@ window.__defineGetter__('help', function() {
     helpText += '\033[32m' + commandName + ':\033[0m ' + description + '\n';
   }
 
-  addCommandHelp('    log(m)', 'Log a message.');
-  addCommandHelp('   info(m)', 'Log a message at the INFO level.');
-  addCommandHelp('warning(m)', 'Log a message at the WARNING level.');
-  addCommandHelp('  error(m)', 'Log a message at the ERROR level.');
-  addCommandHelp('    events', 'List all events that can be listener for.');
-  addCommandHelp('   methods', 'List all API methods that can be invoked.');
-  addCommandHelp('         _', 'Placeholder value that can be passed in ' +
+  addCommandHelp('      log(m)', 'Log a message.');
+  addCommandHelp('     info(m)', 'Log a message at the INFO level.');
+  addCommandHelp('  warning(m)', 'Log a message at the WARNING level.');
+  addCommandHelp('    error(m)', 'Log a message at the ERROR level.');
+  addCommandHelp('serialize(o)', 'Log a hierarchical dump of the object.');
+  addCommandHelp('      events', 'List all events that can be listener for.');
+  addCommandHelp('     methods', 'List all API methods that can be invoked.');
+  addCommandHelp('           _', 'Placeholder value that can be passed in ' +
                                    'wherever a callback is a parameter. Will ' +
                                    'log the invocation and its parameters.');
-  addCommandHelp('ab2str(ab)', 'Converts an ArrayBuffer into a string ' +
+  addCommandHelp('  ab2str(ab)', 'Converts an ArrayBuffer into a string ' +
                                    '(assumes ASCII characters only).');
-  addCommandHelp('str2ab(st)', 'Converts a string into an ArrayBuffer ' +
+  addCommandHelp('  str2ab(st)', 'Converts a string into an ArrayBuffer ' +
                                    '(assumes ASCII characters only).');
-  addCommandHelp('      help', 'This message.');
+  addCommandHelp('        help', 'This message.');
 
   info(helpText);
 

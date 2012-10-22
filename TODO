@@ -6,4 +6,4 @@
 - add necessary manifest entries to enable use of the identity API
 - mention caveats about sync functions
 - isolate sandbox implementation from eval by putting it in an anonymous function
-- make _ include ArrayBuffer contents and pretty-print better
+- mention built-ins in README

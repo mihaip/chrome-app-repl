@@ -32,6 +32,10 @@
   color: #ad0;
 }
 
+#console .jqconsole-ansi-lighter {
+  opacity: .5;
+}
+
 #sandbox-frame {
   width: 0;
   height: 0;
