@@ -8,7 +8,7 @@ Since packaged apps don't allow the direct use of `eval()`, implementing a REPL 
 
 Here's a sample session that plays around with the [socket API](https://developer.chrome.com/apps/socket.html) to do an HTTP request to google.com via a TCP socket on port 80.
 
-First, to save some typing, an alias for the socket API is created:
+First, to save some typing, an alias for the socket API is created. The `undefined` that appears is the result of that expression (variable declarations don't return a value).
 
     > var socket = chrome.socket;
     undefined
