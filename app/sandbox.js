@@ -88,6 +88,7 @@ function generateFunctionStub(path) {
       path: path,
       params: params
     });
+    return SUPPRESS_EVAL_RESPONSE;
   };
 }
 
@@ -118,6 +119,7 @@ function generateEventStub(path) {
         path: path,
         listenerId: listenerId
       });
+      return SUPPRESS_EVAL_RESPONSE;
     },
     removeListener: function(listener) {
       var registeredListenerId = -1;
@@ -140,6 +142,7 @@ function generateEventStub(path) {
         path: path,
         listenerId: registeredListenerId
       });
+      return SUPPRESS_EVAL_RESPONSE;
     },
     hasListeners: function(callback) {
       for (var listenerId in eventListeners) {
@@ -151,6 +154,7 @@ function generateEventStub(path) {
       }
 
       callback(false);
+      return SUPPRESS_EVAL_RESPONSE;
     }
   };
 }
