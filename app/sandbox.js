@@ -20,71 +20,6 @@ addMessageHandler(MessageType.INIT_APIS, function(descriptors) {
   generateApiStubs(apiDescriptors, window, []);
 });
 
-window.__defineGetter__('help', function() {
-  var helpText = '';
-  function addCommandHelp(commandName, description) {
-    helpText += '\033[32m' + commandName + ':\033[0m ' + description + '\n';
-  }
-
-  addCommandHelp('    log(m)', 'Log a message.');
-  addCommandHelp('   info(m)', 'Log a message at the INFO level.');
-  addCommandHelp('warning(m)', 'Log a message at the WARNING level.');
-  addCommandHelp('  error(m)', 'Log a message at the ERROR level.');
-  addCommandHelp('    events', 'List all events that can be listener for.');
-  addCommandHelp('   methods', 'List all API methods that can be invoked.');
-  addCommandHelp('      help', 'This message.');
-
-  info(helpText);
-
-  return SUPPRESS_EVAL_RESPONSE;
-});
-
-window.__defineGetter__('events', function() {
-  // TODO(mihaip): add a more general visitor function pattern for API
-  // descriptors that can be used both here and in generateApiStubs.
-  function dumpEventHelper(descriptors, path) {
-    for (var propertyName in descriptors) {
-      var propertyPath = path.concat(propertyName);
-      var descriptor = descriptors[propertyName];
-
-      if (descriptor.type == 'event') {
-        log(propertyPath.join('.'));
-      }
-
-      if (descriptor.type == 'object') {
-        dumpEventHelper(descriptor.children, propertyPath);
-      }
-
-    }
-  }
-
-  dumpEventHelper(apiDescriptors, []);
-  return SUPPRESS_EVAL_RESPONSE;
-});
-
-window.__defineGetter__('methods', function() {
-  // TODO(mihaip): add a more general visitor function pattern for API
-  // descriptors that can be used both here and in generateApiStubs.
-  function dumpMethodsHelper(descriptors, path) {
-    for (var propertyName in descriptors) {
-      var propertyPath = path.concat(propertyName);
-      var descriptor = descriptors[propertyName];
-
-      if (descriptor.type == 'function') {
-        log(propertyPath.join('.'));
-      }
-
-      if (descriptor.type == 'object') {
-        dumpMethodsHelper(descriptor.children, propertyPath);
-      }
-
-    }
-  }
-
-  dumpMethodsHelper(apiDescriptors, []);
-  return SUPPRESS_EVAL_RESPONSE;
-});
-
 function generateApiStubs(descriptors, object, path) {
   for (var propertyName in descriptors) {
     var propertyPath = path.concat(propertyName);
@@ -131,6 +66,9 @@ function generateFunctionStub(path) {
       var argType = typeof arg;
       switch (typeof arg) {
         case 'function':
+          if (arg == _) {
+            arg = generateLoggingCallback(path);
+          }
           pendingCallbacks[callbackIdCounter] = arg;
           arg = {callbackId: callbackIdCounter++};
         case 'number':
@@ -165,8 +103,6 @@ addMessageHandler(MessageType.RUN_API_FUNCTION_CALLBACK, function(result) {
 var eventListeners = {};
 var eventListenerIdCounter = 0;
 
-// TODO(mihaip): Generate other event method stubs:
-// http://developer.chrome.com/apps/events.html
 function generateEventStub(path) {
   return {
     addListener: function(listener) {

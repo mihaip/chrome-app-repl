@@ -1,7 +1,8 @@
 var SNIPPETS = {
   'List serial ports': 'chrome.serial.getPorts(function(ports) {log(\'Serial ports:\\n  \' + ports.join(\',\\n  \'))});',
   'Add onLaunched listener': 'function launchListener() {log(\'App was launched\')};\nchrome.app.runtime.onLaunched.addListener(launchListener);',
-  'Remove onLaunched listener': 'chrome.app.runtime.onLaunched.removeListener(launchListener);'
+  'Remove onLaunched listener': 'chrome.app.runtime.onLaunched.removeListener(launchListener);',
+  'GET from google.com over TCP sockets': 'var socket = chrome.socket;\nsocket.create(\'tcp\', function(createInfo) {\n  var socketId = createInfo.socketId;\n  socket.connect(socketId, \'www.google.com\', 80, function() {\n    socket.write(socketId, str2ab(\'GET / HTTP/1.0\\r\\n\\r\\n\'), function() {\n      socket.read(socketId, 512, function(readInfo) {\n        log(ab2str(readInfo.data));\n        socket.disconnect(socketId);\n      });\n    });\n  });\n});'
 };
 
 window.addEventListener('onload', setUpContextMenuDelayed);

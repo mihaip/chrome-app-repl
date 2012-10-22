@@ -6,4 +6,5 @@
 - add necessary manifest entries to enable use of the identity API
 - mention caveats about sync functions
 - isolate sandbox implementation from eval by putting it in an anonymous function
-- snippet for GET-ing the contents of google.com over HTTP/sockets
+- add command/control k shortcut for clearing the console
+- make _ include ArrayBuffer contents and pretty-print better
