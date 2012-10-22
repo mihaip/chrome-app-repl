@@ -102,24 +102,30 @@ var GREETING_MESSAGE = '\033[33mWelcome to App APIs REPL.\033[0m\n\n' +
     'run. Type in \033[32mhelp\033[0m for a list of built-in commands.\n';
 var CONSOLE_PROMPT = '> ';
 
-window.addEventListener('load', function() {
-  jqconsole = jQuery('#console').jqconsole(GREETING_MESSAGE, CONSOLE_PROMPT);
+function resetConsole(jqconsole, loop) {
+  jqconsole.Reset();
+
   restoreHistory(jqconsole);
 
-  jqconsole.RegisterShortcut('D', function() {
-    window.close();
-  });
+  jqconsole.RegisterShortcut('D', window.close.bind(window));
+  jqconsole.RegisterShortcut('K', resetConsole.bind(this, jqconsole, loop));
   jqconsole.RegisterMatching('{', '}', 'block-delimiter');
   jqconsole.RegisterMatching('(', ')', 'block-delimiter');
   jqconsole.RegisterMatching('[', ']', 'block-delimiter');
   jqconsole.RegisterMatching('<', '>', 'block-delimiter');
 
+  loop();
+}
+
+window.addEventListener('load', function() {
   // The API bindings will log messages to the dev tools console (e.g. when
   // an API error occurs); we want those to be visible in our console instead.
   console.error = error;
   console.debug = log;
   console.info = info;
   console.warn = warning;
+
+  jqconsole = jQuery('#console').jqconsole(GREETING_MESSAGE, CONSOLE_PROMPT);
 
   function loop() {
     // Start the prompt with history enabled.
@@ -130,7 +136,8 @@ window.addEventListener('load', function() {
       loop();
     });
   };
-  loop();
+
+  resetConsole(jqconsole, loop);
 
   var apiDescriptors = {
     chrome: {
