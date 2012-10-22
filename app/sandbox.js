@@ -11,6 +11,7 @@ function sendHostMessage(type, params) {
 
 function log(text, opt_level) {
   sendHostMessage(MessageType.LOG, {text: text, opt_level: opt_level});
+  return SUPPRESS_EVAL_RESPONSE;
 }
 
 var apiDescriptors;
