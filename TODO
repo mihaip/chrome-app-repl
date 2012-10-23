@@ -1,4 +1,4 @@
-- security protection (make it so that the sandboxed iframe can only run api functions that were in the initially eval-ed text)
+- security protection (add "enabled APIs" to context menu, sandbox can't run APIs that aren't enabled)
 - handle FileEntry results
 - generalize serialization (e.g. turning of callbacks into id references) and make recursive (e.g. for arrays)
 - handle functions that don't return a value (map them to callbacks anyway?) like chrome.runtime.getURL
@@ -7,3 +7,4 @@
 - mention caveats about sync functions
 - isolate sandbox implementation from eval by putting it in an anonymous function
 - mention built-ins in README
+- support _ for event listeners
