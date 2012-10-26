@@ -17,7 +17,6 @@
   "permissions": [
     "alarms",
     "audioCapture",
-    "browserTag",
     "clipboardRead",
     "clipboardWrite",
     "contextMenus",
@@ -25,7 +24,7 @@
     {"fileSystem": ["write"]},
     "geolocation",
     "idle",
-    {"mediaGalleries": ["read", "all-auto-detected"]},
+    {"mediaGalleries": ["read", "allAutoDetected"]},
     "notifications",
     "pushMessaging",
     "serial",
@@ -33,6 +32,7 @@
     "storage",
     "tts",
     "unlimitedStorage",
-    "videoCapture"
+    "videoCapture",
+    "webview"
   ]
 }
