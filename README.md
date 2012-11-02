@@ -57,3 +57,24 @@ And then read the first 512 bytes of the response.
 Finally, we can close the socket.
 
     > socket.disconnect(22);
+
+## Identity API setup
+
+When running locally (as an unpacked app), the app's `manifest.json` should have the following snippet. It forces the app to have a stable ID (`maekkhccpnonljjlbkejieamkbodeida`) by giving it a `key` property (the value is `chrome-app-repl` base 64 encoded).
+
+    "key": "Y2hyb21lLWFwcC1yZXBs",
+    "oauth2": {
+      "client_id": "581301639896.apps.googleusercontent.com",
+      "scopes": [
+        "https://www.google.com/reader/api/"
+      ]
+    }
+
+The store version will have a different ID (`omdkgkgnnakfiojpcjdobjgdlpimkcbp`), so those keys should be replaced with:
+
+    "oauth2": {
+      "client_id": "581301639896-4r356t81mtf1nbnfgc53bgjn3t6k7maq.apps.googleusercontent.com",
+      "scopes": [
+        "https://www.google.com/reader/api/"
+      ]
+    }
