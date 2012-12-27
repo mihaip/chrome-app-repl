@@ -22,15 +22,17 @@ Then a socket is created. The `_` parameter is a special built-in magic value in
           <number> 22
       }
 
-Now that we know the ID of the socket that was created, we can use it to connect to `www.google.com` on port 80 (the invocation of the callback with 0 indicates success).
+Now that we know the ID of the socket that was created (normally we would save it in the callback), we can use it to connect to `www.google.com` on port 80 (the invocation of the callback with 0 indicates success).
 
-    > socket.connect(22, 'www.google.com', 80, _);
+    > var socketId = 22;
+    undefined
+    > socket.connect(socketId, 'www.google.com', 80, _);
     chrome.socket.connect callback invoked with:
       <number> 0
 
 We then issue our HTTP request (`str2ab` is a built-in function that converts a string to an `ArrayBuffer`).
 
-    > socket.write(22, str2ab('GET / HTTP/1.0\r\n\r\n'), _);
+    > socket.write(socketId, str2ab('GET / HTTP/1.0\r\n\r\n'), _);
     chrome.socket.write callback invoked with:
       <object> {
         bytesWritten:
@@ -39,7 +41,7 @@ We then issue our HTTP request (`str2ab` is a built-in function that converts a 
 
 And then read the first 512 bytes of the response.
 
-    > socket.read(22, 512, _);
+    > socket.read(socketId, 512, _);
     chrome.socket.read callback invoked with:
       <object> {
         data:
@@ -56,7 +58,7 @@ And then read the first 512 bytes of the response.
 
 Finally, we can close the socket.
 
-    > socket.disconnect(22);
+    > socket.disconnect(socketId);
 
 ## Identity API setup
 
