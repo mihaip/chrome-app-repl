@@ -10,6 +10,13 @@ function generateLoggingCallback(path) {
   };
 }
 
+function logEventListener(path, params) {
+  log(path.join('.') + ' event triggered' + (params.length ? ' with: ' : ''));
+  for (var i = 0; i < params.length; i++) {
+    log(serializeInternal(params[i], '  '));
+  }
+}
+
 function serializeInternal(o, opt_prefix) {
   var prefix = opt_prefix || '';
   function format(type, value) {

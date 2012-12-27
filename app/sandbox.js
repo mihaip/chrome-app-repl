@@ -164,7 +164,12 @@ addMessageHandler(MessageType.RUN_EVENT_LISTENER, function(params) {
     error('Unknown event listener ' + params.listenerId);
     return;
   }
-  var listener = eventListeners[params.listenerId].listener;
+  var listenerRef = eventListeners[params.listenerId];
+  var listener = listenerRef.listener;
+  if (listener == _) {
+    logEventListener(listenerRef.path, params.params);
+    return;
+  }
   listener.apply(this, params.params);
 });
 
