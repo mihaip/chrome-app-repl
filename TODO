@@ -4,4 +4,3 @@
 - handle functions that don't return a value (map them to callbacks anyway?) like chrome.runtime.getURL
 - support multi-line input (see jqconsole.Prompt)
 - isolate sandbox implementation from eval by putting it in an anonymous function
-- mention built-ins in README

@@ -4,6 +4,23 @@
 
 Since packaged apps don't allow the direct use of `eval()`, implementing a REPL is a bit tricky. The app `eval()`s all code in a [sandboxed frame](http://developer.chrome.com/apps/app_external.html#sandboxing). To enable API usage in a sandboxed frame (where APIs are normally disallowed), proxy/stub functions are created for all APIs such that they're executed in the main frame and the results forwarded back.
 
+### Built-in functions
+
+To make life a bit easier, the REPL environment adds a few built-in functions that you can use.
+
+* `log()`, `info()`, `warning()`, and `error()` let you log values to the console at various logging levels (results of expressions are automatically logged)
+* `serialize()` is a helper method that logs a stringified serialization of the passed in values. This may be useful when inspecting complex objects returned by API methods.
+* `_` is a magic placeholder value that can be passed in to all API methods and event listeners that expect a callback function. The `_` will be replaced with a callback that logs its parameters via `serialize()`
+* `ab2str` and `str2ab` are helper methods for converting between `ArrayBuffer`s and (ASCII-encoded) strings, which make interactions with the [serial](http://developer.chrome.com/apps/serial.html), [socket](http://developer.chrome.com/apps/socket.html), [Bluetooth](http://developer.chrome.com/apps/bluetooth.html), and [USB](http://developer.chrome.com/apps/usb.html) APIs easier.
+
+You can get a complete list of built-in functions by running the `help` command. You can also the `events` and `methods` commands to list all API events that can be listener for and methods that can be invoked.
+
+### Limitations
+
+The implementation of the REPL relies on [`postMessage`](https://developer.mozilla.org/en-US/docs/DOM/window.postMessage) to communicate between the main and sandboxed frames. This is an asynchronous mechanism, and thus only asynchronous Chrome APIs can be proxied. Thankfully most APIs are asynchronous, but this does mean that some simple ones like [`chrome.runtime.getURL`](http://developer.chrome.com/apps/runtime.html#method-getURL) are not supported.
+
+The proxying relies on parameters being copied from one context to another. This is done via the [structured clone algorithm](https://developer.mozilla.org/en-US/docs/DOM/The_structured_clone_algorithm), which means that certain complex JavaScript types may not be supported. Functions parameters (used as callbacks) get special treatment and should work, but currently `FileEntry` values (as used by the [`chrome.fileSystem`](http://developer.chrome.com/apps/fileSystem.html) API) are not supported.
+
 ### Sample usage
 
 Here's a sample session that plays around with the [socket API](https://developer.chrome.com/apps/socket.html) to do an HTTP request to google.com via a TCP socket on port 80.
@@ -60,7 +77,7 @@ Finally, we can close the socket.
 
     > socket.disconnect(socketId);
 
-## Identity API setup
+### Identity API setup
 
 When running locally (as an unpacked app), the app's `manifest.json` should have the following snippet. It forces the app to have a stable ID (`maekkhccpnonljjlbkejieamkbodeida`) by giving it a `key` property (the value is `chrome-app-repl` base 64 encoded).
 
@@ -81,8 +98,3 @@ The store version will have a different ID (`omdkgkgnnakfiojpcjdobjgdlpimkcbp`),
       ]
     }
 
-## Limitations
-
-The implementation of the REPL relies on [`postMessage`](https://developer.mozilla.org/en-US/docs/DOM/window.postMessage) to communicate between the main and sandboxed frames. This is an asynchronous mechanism, and thus only asynchronous Chrome APIs can be proxied. Thankfully most APIs are asynchronous, but this does mean that some simple ones like [`chrome.runtime.getURL`](http://developer.chrome.com/apps/runtime.html#method-getURL) are not supported.
-
-The proxying relies on parameters being copied from one context to another. This is done via the [structured clone algorithm](https://developer.mozilla.org/en-US/docs/DOM/The_structured_clone_algorithm), which means that certain complex JavaScript types may not be supported. Functions parameters (used as callbacks) get special treatment and should work, but currently `FileEntry` values (as used by the [`chrome.fileSystem`](http://developer.chrome.com/apps/fileSystem.html) API) are not supported.
