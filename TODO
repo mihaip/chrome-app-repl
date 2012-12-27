@@ -3,7 +3,5 @@
 - generalize serialization (e.g. turning of callbacks into id references) and make recursive (e.g. for arrays)
 - handle functions that don't return a value (map them to callbacks anyway?) like chrome.runtime.getURL
 - support multi-line input (see jqconsole.Prompt)
-- add necessary manifest entries to enable use of the identity API
-- mention caveats about sync functions
 - isolate sandbox implementation from eval by putting it in an anonymous function
 - mention built-ins in README

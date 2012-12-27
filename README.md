@@ -80,3 +80,9 @@ The store version will have a different ID (`omdkgkgnnakfiojpcjdobjgdlpimkcbp`),
         "https://www.google.com/reader/api/"
       ]
     }
+
+## Limitations
+
+The implementation of the REPL relies on [`postMessage`](https://developer.mozilla.org/en-US/docs/DOM/window.postMessage) to communicate between the main and sandboxed frames. This is an asynchronous mechanism, and thus only asynchronous Chrome APIs can be proxied. Thankfully most APIs are asynchronous, but this does mean that some simple ones like [`chrome.runtime.getURL`](http://developer.chrome.com/apps/runtime.html#method-getURL) are not supported.
+
+The proxying relies on parameters being copied from one context to another. This is done via the [structured clone algorithm](https://developer.mozilla.org/en-US/docs/DOM/The_structured_clone_algorithm), which means that certain complex JavaScript types may not be supported. Functions parameters (used as callbacks) get special treatment and should work, but currently `FileEntry` values (as used by the [`chrome.fileSystem`](http://developer.chrome.com/apps/fileSystem.html) API) are not supported.
