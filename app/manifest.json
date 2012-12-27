@@ -17,6 +17,7 @@
   "permissions": [
     "alarms",
     "audioCapture",
+    "bluetooth",
     "clipboardRead",
     "clipboardWrite",
     "contextMenus",
@@ -26,13 +27,16 @@
     "idle",
     {"mediaGalleries": ["read", "allAutoDetected"]},
     "notifications",
+    "pointerLock",
     "pushMessaging",
     "serial",
     {"socket": ["tcp-connect", "tcp-listen", "udp-send-to", "udp-bind"]},
+    "systemIndicator",
     "storage",
     "tts",
     "unlimitedStorage",
     "videoCapture",
+    "usb",
     "webview"
   ]
 }
