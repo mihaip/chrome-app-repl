@@ -1,4 +1,7 @@
-chrome.app.runtime.onLaunched.addListener(function() {
+chrome.app.runtime.onLaunched.addListener(openWindow);
+chrome.app.runtime.onRestarted.addListener(openWindow);
+
+function openWindow() {
   chrome.app.window.create('window.html', {
     id: 'window',
     defaultWidth: 600,
@@ -6,4 +9,4 @@ chrome.app.runtime.onLaunched.addListener(function() {
     defaultTop: 20,
     defaultLeft: 20
   });
-});
+}
