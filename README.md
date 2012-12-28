@@ -6,7 +6,7 @@ Since packaged apps don't allow the direct use of `eval()`, implementing a REPL 
 
 ### Installation
 
-The REPL application is [available in the Chrome Web Store](https://chrome.google.com/webstore/detail/omdkgkgnnakfiojpcjdobjgdlpimkcbp). Use the "Add to Chrome" button from the store web page, and then launch it from the New Tab Page.
+The REPL application is [available in the Chrome Web Store](https://chrome.google.com/webstore/detail/omdkgkgnnakfiojpcjdobjgdlpimkcbp). Use the "Add to Chrome" button from the store web page, and then launch it from the New Tab Page. Note that due to a [Chrome bug](https://code.google.com/p/chromium/issues/detail?id=159450) you'll need to click on the console window to give it focus before you can start typing.
 
 ### Built-in functions
 
