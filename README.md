@@ -4,6 +4,10 @@
 
 Since packaged apps don't allow the direct use of `eval()`, implementing a REPL is a bit tricky. The app `eval()`s all code in a [sandboxed frame](http://developer.chrome.com/apps/app_external.html#sandboxing). To enable API usage in a sandboxed frame (where APIs are normally disallowed), proxy/stub functions are created for all APIs such that they're executed in the main frame and the results forwarded back.
 
+### Installation
+
+The REPL application is [available in the Chrome Web Store](https://chrome.google.com/webstore/detail/omdkgkgnnakfiojpcjdobjgdlpimkcbp). Use the "Add to Chrome" button from the store web page, and then launch it from the New Tab Page.
+
 ### Built-in functions
 
 To make life a bit easier, the REPL environment adds a few built-in functions that you can use.
@@ -23,7 +27,7 @@ The proxying relies on parameters being copied from one context to another. This
 
 ### Sample usage
 
-Here's a sample session that plays around with the [socket API](https://developer.chrome.com/apps/socket.html) to do an HTTP request to google.com via a TCP socket on port 80.
+Here's a sample session that plays around with the [socket API](https://developer.chrome.com/apps/socket.html) to do an HTTP request to google.com via a TCP socket on port 80. This sesssion is also [available as a screencast](http://www.youtube.com/watch?v=IK5RYT2Um9A).
 
 First, to save some typing, an alias for the socket API is created. The `undefined` that appears is the result of that expression (variable declarations don't return a value).
 
