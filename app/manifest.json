@@ -1,6 +1,6 @@
 {
   "name": "App APIs REPL",
-  "version": "1.0",
+  "version": "1.0.1",
   "app": {
     "background": {
       "scripts": ["main.js"]
@@ -12,6 +12,7 @@
     ]
   },
   "icons": {
+    "16": "icon-16.png",
     "128": "icon-128.png"
   },
   "permissions": [
