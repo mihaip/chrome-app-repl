@@ -14,7 +14,7 @@ var MessageType = {
   RUN_API_FUNCTION_CALLBACK: 'run-api-function-callback',
 
   // Sent from the sandbox to the host to log a message to the console.
-  LGO: 'log',
+  LOG: 'log',
 
   // Sent from the sandbox to the host with a request to add a listener for an
   // event.
