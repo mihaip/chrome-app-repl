@@ -1,6 +1,6 @@
 {
   "name": "App APIs REPL",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "app": {
     "background": {
       "scripts": ["main.js"]
@@ -39,5 +39,11 @@
     "videoCapture",
     "usb",
     "webview"
-  ]
+  ],
+  "oauth2": {
+    "client_id": "581301639896-4r356t81mtf1nbnfgc53bgjn3t6k7maq.apps.googleusercontent.com",
+    "scopes": [
+      "https://www.google.com/reader/api/"
+    ]
+  }
 }
