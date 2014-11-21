@@ -1,6 +1,6 @@
 {
   "name": "App APIs REPL",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "app": {
     "background": {
       "scripts": ["main.js"]
@@ -15,27 +15,55 @@
     "16": "icon-16.png",
     "128": "icon-128.png"
   },
+  "sockets": {
+    "udp": {
+      "send": "*",
+      "bind": "*"
+    },
+    "tcp": {
+      "connect": "*"
+    },
+    "tcpServer": {
+      "listen": "*"
+    }
+  },
   "permissions": [
     "alarms",
+    "audio",
     "audioCapture",
-    "bluetooth",
+    "browser",
     "clipboardRead",
     "clipboardWrite",
     "contextMenus",
-    "experimental",
-    {"fileSystem": ["write"]},
+    "copresence",
+    "desktopCapture",
+    "dns",
+    "documentScan",
+    {"fileSystem": ["write", "retainEntries", "directory"]},
+    "gcm",
     "geolocation",
+    "hid",
+    "identity",
     "idle",
+    "location",
     {"mediaGalleries": ["read", "allAutoDetected"]},
     "notifications",
     "pointerLock",
+    "power",
     "pushMessaging",
     "serial",
+    "signedInDevices",
     {"socket": ["tcp-connect", "tcp-listen", "udp-send-to", "udp-bind"]},
-    "systemIndicator",
     "storage",
+    "syncFileSystem",
+    "system.cpu",
+    "system.display",
+    "system.memory",
+    "system.network",
+    "system.storage",
     "tts",
     "unlimitedStorage",
+    "usb",
     "videoCapture",
     "usb",
     "webview"
